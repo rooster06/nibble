@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "plan": {
+      "type": "object",
+      "properties": {
+        "shareables": { "type": "integer" },
+        "mains": { "type": "integer" },
+        "dessert": { "type": "integer" },
+        "reasoning": { "type": "string" }
+      },
+      "required": ["shareables", "mains", "dessert"]
+    },
+    "recommendations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "dish": { "type": "string" },
+          "category": {
+            "type": "string",
+            "enum": ["shareable", "main", "dessert"]
+          },
+          "reason": { "type": "string" },
+          "for_whom": { "type": ["string", "null"] }
+        },
+        "required": ["dish", "category", "reason"]
+      }
+    },
+    "avoid": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "dish": { "type": "string" },
+          "reason": { "type": "string" }
+        },
+        "required": ["dish", "reason"]
+      }
+    }
+  },
+  "required": ["plan", "recommendations"]
+}

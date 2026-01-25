@@ -1,0 +1,11 @@
+# PWA Icons Required
+# Add these files:
+# - icon-192.png (192x192 PNG)
+# - icon-512.png (512x512 PNG)
+#
+# You can generate these from an SVG using:
+# npx @nicepkg/icon-gen --input logo.svg --output ./
+#
+# Or use online tools like:
+# - https://realfavicongenerator.net/
+# - https://favicon.io/

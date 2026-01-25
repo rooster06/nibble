@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "restaurant_name": {
+      "type": ["string", "null"]
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "dishes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "description": { "type": ["string", "null"] },
+                "price": { "type": ["number", "null"] },
+                "dietary": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              },
+              "required": ["name"]
+            }
+          }
+        },
+        "required": ["name", "dishes"]
+      }
+    }
+  },
+  "required": ["sections"]
+}
