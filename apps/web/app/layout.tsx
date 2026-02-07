@@ -34,9 +34,15 @@ export default function RootLayout({
         <AuthProvider>
           <div className="min-h-screen flex flex-col">
             <header className="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-800">
-              <div className="max-w-4xl mx-auto px-4 py-4">
+              <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
                 <a href="/" className="text-2xl font-bold text-primary-600">
                   Nibble
+                </a>
+                <a
+                  href="/games"
+                  className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                >
+                  Games
                 </a>
               </div>
             </header>
