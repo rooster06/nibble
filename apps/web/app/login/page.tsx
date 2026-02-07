@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -9,10 +9,35 @@ export default function LoginPage() {
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState<"email" | "code">("email");
   const [loading, setLoading] = useState(false);
+  const [restoring, setRestoring] = useState(true);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   const supabase = createClient();
   const router = useRouter();
+
+  // Try to restore session from localStorage (iOS PWA loses cookies on close)
+  useEffect(() => {
+    const restore = async () => {
+      try {
+        const saved = localStorage.getItem("sb-session");
+        if (saved) {
+          const { access_token, refresh_token } = JSON.parse(saved);
+          const { error } = await supabase.auth.setSession({ access_token, refresh_token });
+          if (!error) {
+            router.refresh();
+            router.push("/");
+            return;
+          }
+          // Session expired, clear it
+          localStorage.removeItem("sb-session");
+        }
+      } catch {
+        localStorage.removeItem("sb-session");
+      }
+      setRestoring(false);
+    };
+    restore();
+  }, []);
 
   const handleSendCode = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,11 +75,20 @@ export default function LoginPage() {
     if (error) {
       setMessage({ type: "error", text: error.message });
     } else {
+      router.refresh();
       router.push("/");
     }
 
     setLoading(false);
   };
+
+  if (restoring) {
+    return (
+      <div className="min-h-[80vh] flex items-center justify-center">
+        <p className="text-gray-500 dark:text-gray-400">Signing you in...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center">

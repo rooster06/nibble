@@ -36,12 +36,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
+
+      // Backup session to localStorage for PWA persistence on iOS
+      if (session) {
+        localStorage.setItem("sb-session", JSON.stringify({
+          access_token: session.access_token,
+          refresh_token: session.refresh_token,
+        }));
+      } else {
+        localStorage.removeItem("sb-session");
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
   const signOut = async () => {
+    localStorage.removeItem("sb-session");
     await supabase.auth.signOut();
   };
 
