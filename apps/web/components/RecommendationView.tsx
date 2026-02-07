@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useEffect } from "react";
 import { Menu, RecommendResponse, ReviewsResponse } from "@/lib/api";
 import DishCard from "./DishCard";
 
@@ -62,6 +63,14 @@ export default function RecommendationView({
   setGoogleMapsUrl,
   onSubmit,
 }: RecommendationViewProps) {
+  const resultsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (recommendations && resultsRef.current) {
+      resultsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [recommendations]);
+
   const toggleDietary = (option: string) => {
     if (dietary.includes(option)) {
       setDietary(dietary.filter((d) => d !== option));
@@ -271,7 +280,7 @@ export default function RecommendationView({
 
       {/* Results */}
       {recommendations && (
-        <div className="space-y-8">
+        <div ref={resultsRef} className="space-y-8">
           {/* Plan Summary */}
           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
