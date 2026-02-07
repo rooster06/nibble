@@ -147,6 +147,7 @@ export default function AdminPage() {
   }
 
   const pendingRequests = requests.filter((r) => r.status === "pending");
+  const deniedRequests = requests.filter((r) => r.status === "denied");
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
@@ -227,6 +228,38 @@ export default function AdminPage() {
           </div>
         )}
       </div>
+
+      {/* Denied Requests */}
+      {deniedRequests.length > 0 && (
+        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6 mb-8">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+            Denied Requests ({deniedRequests.length})
+          </h2>
+          <div className="space-y-4">
+            {deniedRequests.map((request) => (
+              <div
+                key={request.id}
+                className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg"
+              >
+                <div>
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    {request.email}
+                  </p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Denied {new Date(request.created_at).toLocaleDateString()}
+                  </p>
+                </div>
+                <button
+                  onClick={() => handleApprove(request)}
+                  className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition"
+                >
+                  Approve
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Allowed Users */}
       <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-6">
