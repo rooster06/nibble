@@ -2,9 +2,9 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { getPresignedUrls, extractMenu, getMenuData } from "@/lib/api";
+import { getPresignedUrls, extractMenu, getMenuData, getMenuImages } from "@/lib/api";
 
-type UploadState = "idle" | "uploading" | "extracting" | "complete" | "error";
+type UploadState = "idle" | "uploading" | "extracting" | "loading_images" | "complete" | "error";
 
 export default function MenuUpload() {
   const router = useRouter();
@@ -83,6 +83,9 @@ export default function MenuUpload() {
         const result = await getMenuData(run_id);
 
         if (result.status === "EXTRACTED" || result.menu) {
+          // Menu extracted — now wait for images (already being fetched by backend)
+          setState("loading_images");
+          await getMenuImages(run_id);
           setState("complete");
           router.push(`/menu/${run_id}`);
           return;
@@ -195,18 +198,19 @@ export default function MenuUpload() {
       {/* Upload button */}
       <button
         onClick={handleUpload}
-        disabled={files.length === 0 || state === "uploading" || state === "extracting"}
+        disabled={files.length === 0 || state === "uploading" || state === "extracting" || state === "loading_images"}
         className={`
           w-full py-3 px-6 rounded-xl font-semibold text-white transition-all
           ${
-            files.length === 0 || state === "uploading" || state === "extracting"
+            files.length === 0 || state === "uploading" || state === "extracting" || state === "loading_images"
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-primary-600 hover:bg-primary-700 active:scale-[0.98]"
           }
         `}
       >
         {state === "uploading" && "Uploading..."}
-        {state === "extracting" && "Extracting dishes..."}
+        {state === "extracting" && "Analyzing menu..."}
+        {state === "loading_images" && "Loading dish photos..."}
         {state === "idle" && `Analyze Menu${files.length > 0 ? ` (${files.length} photo${files.length > 1 ? "s" : ""})` : ""}`}
         {state === "error" && "Try Again"}
         {state === "complete" && "Done!"}

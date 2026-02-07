@@ -132,6 +132,22 @@ def do_async_extraction(event):
         update_run_status(run_id, "EXTRACTED")
         print(f"Extraction complete for {run_id}")
 
+        # Trigger image fetching immediately (async, don't wait)
+        images_function = os.environ.get("IMAGES_FUNCTION_NAME")
+        if images_function:
+            try:
+                lambda_client.invoke(
+                    FunctionName=images_function,
+                    InvocationType="Event",
+                    Payload=json.dumps({
+                        "async_images": True,
+                        "run_id": run_id,
+                    }),
+                )
+                print(f"Triggered image fetching for {run_id}")
+            except Exception as img_err:
+                print(f"Failed to trigger image fetching: {img_err}")
+
     except Exception as e:
         print(f"Extraction error for {run_id}: {str(e)}")
         update_run_status(run_id, "FAILED", {"error": str(e)})

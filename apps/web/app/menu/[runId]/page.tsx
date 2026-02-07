@@ -53,11 +53,14 @@ export default function MenuPage() {
     });
   }
 
-  if (menuState === "loading") {
+  if (menuState === "loading" || imagesState === "loading") {
     return (
       <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-center py-12">
+        <div className="flex flex-col items-center justify-center py-12 gap-3">
           <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-500 border-t-transparent"></div>
+          <p className="text-gray-500 dark:text-gray-400 text-sm">
+            {menuState === "loading" ? "Loading menu..." : "Loading dish photos..."}
+          </p>
         </div>
       </div>
     );
@@ -130,7 +133,7 @@ export default function MenuPage() {
                 key={dishIndex}
                 dish={dish}
                 images={dishImages[dish.name] || []}
-                loading={imagesState === "loading"}
+                loading={false}
                 showPrice={allDishesHavePrices}
               />
             ))}

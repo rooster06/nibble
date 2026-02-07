@@ -133,14 +133,15 @@ resource "aws_lambda_function" "extract" {
 
   environment {
     variables = {
-      UPLOADS_BUCKET      = aws_s3_bucket.uploads.id
-      CACHE_BUCKET        = aws_s3_bucket.cache.id
-      DYNAMO_TABLE        = aws_dynamodb_table.menu_runs.name
-      OPENAI_SECRET_ARN   = aws_secretsmanager_secret.openai.arn
-      ENVIRONMENT         = var.environment
-      SUPABASE_JWT_SECRET = var.supabase_jwt_secret
-      SUPABASE_URL        = var.supabase_url
-      FRONTEND_URL        = var.frontend_url
+      UPLOADS_BUCKET       = aws_s3_bucket.uploads.id
+      CACHE_BUCKET         = aws_s3_bucket.cache.id
+      DYNAMO_TABLE         = aws_dynamodb_table.menu_runs.name
+      OPENAI_SECRET_ARN    = aws_secretsmanager_secret.openai.arn
+      IMAGES_FUNCTION_NAME = aws_lambda_function.images.function_name
+      ENVIRONMENT          = var.environment
+      SUPABASE_JWT_SECRET  = var.supabase_jwt_secret
+      SUPABASE_URL         = var.supabase_url
+      FRONTEND_URL         = var.frontend_url
     }
   }
 }
